@@ -10,6 +10,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import com.samples.FileCounter;
 import com.samples.ICounter;
 import com.samples.S3Counter;
 
@@ -34,7 +35,7 @@ public class FileCounterServlet extends HttpServlet {
 	 */
 	public void init(ServletConfig config) throws ServletException {
 		super.init(config);
-    	fileCounter = new S3Counter();
+    	fileCounter = new FileCounter();
 	}
 
 	/**
@@ -42,11 +43,13 @@ public class FileCounterServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 //		request.getSession(true);
+		String verParam = request.getParameter("version");
+		
 		response.setContentType("text/html");
 		ServletOutputStream out = response.getOutputStream();
 		int count = fileCounter.getCounter(true);
 		getServletContext().log("New counter value: " + count);
-		out.print("" + count);
+		out.print("" + count + (verParam != null ? "-" + verParam: ""));
 	}
 
 	/**
